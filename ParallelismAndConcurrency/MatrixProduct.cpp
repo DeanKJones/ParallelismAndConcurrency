@@ -34,7 +34,7 @@ Matrix multMatrix(Matrix a, Matrix b) {
 		matrixSum = Matrix(a.rows, b.cols);
 
 		/* Multiply Matrix Row */
-		for (int i = 0; i < matrixSum.rows; ++i) {
+		for (int i = 0; i < a.rows; ++i) {
 			threads.emplace_back(multMatrixRow, a, b, matrixSum, i);
 		}
 		/* Wait for threads */
@@ -46,24 +46,47 @@ Matrix multMatrix(Matrix a, Matrix b) {
 }
 
 Matrix fillMatrix(Matrix matrix) {
-	for (int i = 0; i < matrix.cols; ++i) {
-		for (int j = 0; j < matrix.rows; ++j) {
-			matrix.elements[i][j] = i + j;
+	Matrix matrixLoop = matrix;
+	int k = 0;
+	for (int i = 0; i < matrixLoop.cols; ++i) {
+		for (int j = 0; j < matrixLoop.rows; ++j) {
+			matrixLoop.elements[j].push_back(k);
+			k += 1;
 		}
 	}
+	return matrixLoop;
+}
+
+void outputMatrix(Matrix matrix) {
+	Matrix matrixLoop = matrix;
+	std::cout << "Matrix:" << std::endl;
+	for (int i = 0; i < matrixLoop.cols; ++i) {
+		for (int j = 0; j < matrixLoop.rows; ++j) {
+			std::cout << matrixLoop.elements[j][i] << " \n"[j == (matrixLoop.rows - 1)];
+		}
+	}
+	std::cout << "\n";
 }
 
 
 int main() 
 {
 	/* Matrices */
-	//int matrix0[3][2] = { {0,1}, {2,3}, {4,5} };
-	//int matrix1[2][3] = { {6,7,8}, {9,10,11} };
-	//int matrixSum[3][3] = { {0,0,0}, {0,0,0}, {0,0,0} };
-
 	Matrix matrix0(3, 2);
 	Matrix matrix1(2, 3);
 	Matrix matrixResult(3, 3); 
 
+	/* Fill Matrices */
 	matrix0 = fillMatrix(matrix0);
+	matrix1 = fillMatrix(matrix1);
+
+	/* Do Multiplication */
+	matrixResult = multMatrix(matrix0, matrix1);
+
+	/* Output */
+	outputMatrix(matrix0);
+	outputMatrix(matrix1); 
+	outputMatrix(matrixResult);
+
+	return 0;
 }
