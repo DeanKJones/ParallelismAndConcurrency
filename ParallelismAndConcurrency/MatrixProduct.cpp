@@ -1,6 +1,7 @@
 #include <thread>
 #include <iostream>
 #include <vector>
+#include <numeric>
 #include <string>
 
 /* Create Matrix Class */
@@ -23,29 +24,65 @@ public:
 /* Thread Multiplication */
 void multMatrixRow(Matrix a, Matrix b, Matrix& sum, int index) {
 
-	for (int i = 0; i < b.cols; ++i) {
-		for (int j = 0; j < a.rows; ++j) {
-			int indexI = index + i;
-			int indexJ = index + j;
-			int IJ = i + j;
+	std::vector<int> A0 = { a.elements[0], a.elements[1] };
+	std::vector<int> A1 = { a.elements[2], a.elements[3] };
 
-			// Incorrect math
-			sum.elements[indexI] += a.elements[indexJ] * b.elements[IJ];
+	std::vector<int> B0 = { b.elements[0], b.elements[2] };
+	std::vector<int> B1 = { b.elements[1], b.elements[3] };
+
+	/* For Cases */
+	switch (index) {
+	case 0:
+		sum.elements[index] = std::inner_product(A0.begin(), A0.end(), B0.begin(), 0);
+		break;
+	case 1:
+		sum.elements[index] = std::inner_product(A0.begin(), A0.end(), B1.begin(), 0);
+		break;
+	case 2:
+		sum.elements[index] = std::inner_product(A1.begin(), A1.end(), B0.begin(), 0);
+		break;
+	case 3:
+		sum.elements[index] = std::inner_product(A1.begin(), A1.end(), B1.begin(), 0);
+		break;
+	}
+
+	/* Automate 
+	/* Create Vectors *
+	std::vector<std::vector<int> > A;
+	std::vector<std::vector<int> > B;
+
+	int aRows = a.rows;
+
+	for (int k = 0; k < aRows; ++k) {
+		for (int l = 0; l < a.cols; ++l) {
+			int indx = a.cols * k + l;
+			A[k].push_back(a.elements[indx]);
 		}
 	}
-	std::cout << "Row: " << std::to_string(index) << " complete.\n";
+
+	for (int i : A[0])
+		std::cout << "M1[0]: " << i << ' ';
+
+	/* Do Product *
+	for (int i = 0; i < sum.cols; ++i) {
+		for (int j = 0; j < sum.rows; ++j) {
+			//sum.elements[i] = std::inner_product()
+		}
+	}
+	*/
 }
 
 Matrix multMatrix(Matrix m1, Matrix m2) {
 
 	Matrix matrixSum(m1.rows, m2.cols);
+	std::vector<std::thread> threads;
 
-	std::thread t0(multMatrixRow, m1, m2, std::ref(matrixSum), 0);
-	std::thread t1(multMatrixRow, m1, m2, std::ref(matrixSum), 1);
-
-	t0.join();
-	t1.join();
-
+	for (int i = 0; i < matrixSum.elements.size(); ++i) {
+		threads.emplace_back(std::thread(multMatrixRow, m1, m2, std::ref(matrixSum), i));
+	}
+	for (auto& entry : threads) {
+		entry.join();
+	}
 	return matrixSum;
 }
 
