@@ -45,31 +45,6 @@ void multMatrixRow(Matrix a, Matrix b, Matrix& sum, int index) {
 		sum.elements[index] = std::inner_product(A1.begin(), A1.end(), B1.begin(), 0);
 		break;
 	}
-
-	/* Automate 
-	/* Create Vectors *
-	std::vector<std::vector<int> > A;
-	std::vector<std::vector<int> > B;
-
-	int aRows = a.rows;
-
-	for (int k = 0; k < aRows; ++k) {
-		for (int l = 0; l < a.cols; ++l) {
-			int indx = a.cols * k + l;
-			A[k].push_back(a.elements[indx]);
-		}
-	}
-
-	for (int i : A[0])
-		std::cout << "M1[0]: " << i << ' ';
-
-	/* Do Product *
-	for (int i = 0; i < sum.cols; ++i) {
-		for (int j = 0; j < sum.rows; ++j) {
-			//sum.elements[i] = std::inner_product()
-		}
-	}
-	*/
 }
 
 Matrix multMatrix(Matrix m1, Matrix m2) {
@@ -130,3 +105,31 @@ int main()
 
 	return 0;
 }
+
+/* TODO */
+/*
+void prepareMatrix(Matrix m1, Matrix m2) {
+	/* Create Vectors
+	std::vector<std::vector<int> > matrixA;
+	std::vector<std::vector<int> > MatrixB;
+
+	int aRows = m1.rows;
+	int aCols = m1.cols;
+
+	for (int k = 0; k < aRows; ++k) {
+		matrixA.resize(aRows);
+		for (int l = 0; l < aCols; ++l) {
+			int indx = aCols * k + l;
+			matrixA[k].push_back(m1.elements[indx]);
+		}
+	}
+	for (int i : matrixA[1])
+		std::cout << "M1[0]: " << i << ' ';
+
+	/* Do Product
+	for (int i = 0; i < sum.cols; ++i) {
+		for (int j = 0; j < sum.rows; ++j) {
+			//sum.elements[i] = std::inner_product()
+		}
+	}
+}*/
